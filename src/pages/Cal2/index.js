@@ -1,5 +1,4 @@
-// import { useState } from 'react';
-import { useState, useRef, useEffect } from 'react';
+import { useState, useRef } from 'react';
 import useAxios from '../../hooks/useAxios';
 import { API } from '../../config';
 
@@ -19,7 +18,11 @@ export default function Cal2() {
   const date = new Date(timestamp);
 
   const handleValue = e => {
-    setInputValue(e.target.value);
+    if (e.target.value > 1000) {
+      setInputValue(1000);
+    } else {
+      setInputValue(e.target.value);
+    }
   };
 
   const changeSelectValue = () => {
@@ -31,13 +34,21 @@ export default function Cal2() {
     setTapValue(name);
   };
 
+  const handleInputNumber = e => {
+    if (!/[0-9]/.test(e.key)) {
+      e.preventDefault();
+    }
+  };
+
   return (
     <div className="h-screen flex justify-center  items-center">
       <div className="w-96 p-6 border-solid border-4 border-black">
         <div className="flex mb-6">
           <input
-            className="w-full h-10 mr-1.5 pl-2 border-solid border-2 border-black"
+            value={inputValue}
             onChange={handleValue}
+            onKeyPress={handleInputNumber}
+            className="w-full h-10 mr-1.5 pl-2 border-solid border-2 border-black"
           />
           <div className="w-full h-10 ml-1.5 border-solid border-2 border-black">
             <select
