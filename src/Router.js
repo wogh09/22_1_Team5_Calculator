@@ -7,9 +7,9 @@ function Router() {
   return (
     <BrowserRouter>
       <Routes>
+        <Route path="/" element={<Main />} />
         <Route path="/cal1" element={<Cal1 />} />
         <Route path="/cal2" element={<Cal2 />} />
-        <Route path="/" element={<Main />} />
       </Routes>
     </BrowserRouter>
   );
