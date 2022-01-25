@@ -1,6 +1,13 @@
+// import { useState } from 'react';
 import { CURRENCY_LIST } from './currencyData';
+import { API } from '../../config';
+import useAxios from '../../hooks/useAxios';
 
 export default function Cal2() {
+  const { data, loading, error } = useAxios(
+    `${API.key}${process.env.REACT_APP_DATA_KEY}`
+  );
+
   return (
     <div className="h-screen flex justify-center	items-center">
       <div className="w-96 p-6 border-solid border-4 border-black">
@@ -23,7 +30,7 @@ export default function Cal2() {
               return (
                 <li
                   key={data.id}
-                  className="w-full h-8 text-center border-solid border-2 border-black"
+                  className="w-full h-8 text-center border-solid border-y-2 border-l-2 last:border-r-2 border-black"
                 >
                   {data.value}
                 </li>
