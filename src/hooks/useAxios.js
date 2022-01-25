@@ -1,6 +1,5 @@
 import { useState, useEffect } from 'react';
 import axios from 'axios';
-import { API } from 'config';
 
 const useAxios = url => {
   const [data, setData] = useState(null);
