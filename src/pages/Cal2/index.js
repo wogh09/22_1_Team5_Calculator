@@ -15,6 +15,9 @@ export default function Cal2() {
   const saveTapValue = data?.quotes[tapValue];
   const saveSelectValue = data?.quotes[selectValue];
 
+  const timestamp = data?.timestamp * 1000;
+  const date = new Date(timestamp);
+
   const handleValue = e => {
     setInputValue(e.target.value);
   };
@@ -29,7 +32,7 @@ export default function Cal2() {
   };
 
   return (
-    <div className="h-screen flex justify-center	items-center">
+    <div className="h-screen flex justify-center  items-center">
       <div className="w-96 p-6 border-solid border-4 border-black">
         <div className="flex mb-6">
           <input
@@ -95,12 +98,20 @@ export default function Cal2() {
             />
           </div>
           <div className="h-72 p-10 border-solid border-x-2 border-b-2 border-black">
-            <div className="text-2xl">
-              <span>{tapValue.substring(3)}</span>
-              <span>{(inputValue * saveTapValue) / saveSelectValue}</span>
+            <div className="text-3xl">
+              <span>{tapValue.substring(3)} </span>
+              <span>
+                {((inputValue * saveTapValue) / saveSelectValue).toFixed(2)}
+              </span>
             </div>
             <div>기준일 :</div>
-            <div>2022-01</div>
+            <div>
+              {date.getFullYear() +
+                '-' +
+                date.toDateString().slice(4, 7) +
+                '-' +
+                String(date.getDate()).padStart(2, '0')}
+            </div>
           </div>
         </div>
       </div>
