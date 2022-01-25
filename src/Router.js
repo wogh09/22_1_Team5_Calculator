@@ -8,7 +8,7 @@ function Router() {
     <BrowserRouter>
       <Routes>
         <Route path="/cal1" element={<Cal1 />} />
-        <Route path="/Cal2" element={<Cal2 />} />
+        <Route path="/cal2" element={<Cal2 />} />
         <Route path="/" element={<Main />} />
       </Routes>
     </BrowserRouter>
