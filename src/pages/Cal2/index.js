@@ -4,12 +4,18 @@ import useAxios from '../../hooks/useAxios';
 import { API } from '../../config';
 
 export default function Cal2() {
-  const [inputValue, setInputValue] = useState('1');
+  const [inputValue, setInputValue] = useState('0');
   const [selectValue, setSelectValue] = useState('USDUSD');
   const [tapValue, setTapValue] = useState('USDCAD');
+  const [isClicked, setIsClicked] = useState([
+    true,
+    false,
+    false,
+    false,
+    false,
+  ]);
 
   const ref = useRef();
-  const listRef = useRef();
 
   const { data } = useAxios(`${API.key}${process.env.REACT_APP_DATA_KEY}`);
   const saveTapValue = data?.quotes[tapValue];
@@ -29,7 +35,21 @@ export default function Cal2() {
   const handleTapValue = e => {
     const name = e.target.getAttribute('name');
     setTapValue(name);
+    if (name === 'USDCAD') {
+      setIsClicked([true, false, false, false, false]);
+    } else if (name === 'USDKRW') {
+      setIsClicked([false, true, false, false, false]);
+    } else if (name === 'USDHKD') {
+      setIsClicked([false, false, true, false, false]);
+    } else if (name === 'USDJPY') {
+      setIsClicked([false, false, false, true, false]);
+    } else if (name === 'USDCNY') {
+      setIsClicked([false, false, false, false, true]);
+    }
   };
+
+  console.log('selectValue>>', selectValue);
+  console.log('tapValue>>', tapValue);
 
   return (
     <div className="h-screen flex justify-center  items-center">
@@ -58,48 +78,55 @@ export default function Cal2() {
           <div className="flex">
             <input
               type="button"
-              value="CAD"
-              name="USDCAD"
-              ref={listRef}
+              value={selectValue === 'USDCAD' ? 'USD' : 'CAD'}
+              name={selectValue === 'USDCAD' ? 'USDUSD' : 'USDCAD'}
               onClick={handleTapValue}
-              className="w-full h-8 text-center border-solid border-y-2 border-l-2 last:border-r-2 border-black"
+              className={`w-full h-8 text-center border-solid ${
+                isClicked[0] ? 'border-t-2' : 'border-y-2'
+              } border-l-2 last:border-r-2 border-black`}
             />
             <input
               type="button"
-              value="KRW"
-              name="USDKRW"
-              ref={listRef}
+              value={selectValue === 'USDKRW' ? 'USD' : 'KRW'}
+              name={selectValue === 'USDKRW' ? 'USDUSD' : 'USDKRW'}
               onClick={handleTapValue}
-              className="w-full h-8 text-center border-solid border-y-2 border-l-2 last:border-r-2 border-black"
+              className={`w-full h-8 text-center border-solid ${
+                isClicked[1] ? 'border-t-2' : 'border-y-2'
+              } border-l-2 last:border-r-2 border-black`}
             />
             <input
               type="button"
-              value="HKD"
-              name="USDHKD"
-              ref={listRef}
+              value={selectValue === 'USDHKD' ? 'USD' : 'HKD'}
+              name={selectValue === 'USDHKD' ? 'USDUSD' : 'USDHKD'}
               onClick={handleTapValue}
-              className="w-full h-8 text-center border-solid border-y-2 border-l-2 last:border-r-2 border-black"
+              className={`w-full h-8 text-center border-solid ${
+                isClicked[2] ? 'border-t-2' : 'border-y-2'
+              } border-l-2 last:border-r-2 border-black`}
             />
             <input
               type="button"
-              value="JPY"
-              name="USDJPY"
-              ref={listRef}
+              value={selectValue === 'USDJPY' ? 'USD' : 'JPY'}
+              name={selectValue === 'USDJPY' ? 'USDUSD' : 'USDJPY'}
               onClick={handleTapValue}
-              className="w-full h-8 text-center border-solid border-y-2 border-l-2 last:border-r-2 border-black"
+              className={`w-full h-8 text-center border-solid ${
+                isClicked[3] ? 'border-t-2' : 'border-y-2'
+              } border-l-2 last:border-r-2 border-black`}
             />
             <input
               type="button"
-              value="CNY"
-              name="USDCNY"
-              ref={listRef}
+              value={selectValue === 'USDCNY' ? 'USD' : 'CNY'}
+              name={selectValue === 'USDCNY' ? 'USDUSD' : 'USDCNY'}
               onClick={handleTapValue}
-              className="w-full h-8 text-center border-solid border-y-2 border-l-2 last:border-r-2 border-black"
+              className={`w-full h-8 text-center border-solid ${
+                isClicked[4] ? 'border-t-2' : 'border-y-2'
+              } border-l-2 last:border-r-2 border-black`}
             />
           </div>
           <div className="h-72 p-10 border-solid border-x-2 border-b-2 border-black">
             <div className="text-3xl">
-              <span>{tapValue.substring(3)} </span>
+              <span>
+                {selectValue === tapValue ? 'USD' : tapValue.substring(3)}
+              </span>
               <span>
                 {((inputValue * saveTapValue) / saveSelectValue).toFixed(2)}
               </span>
