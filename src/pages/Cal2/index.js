@@ -3,16 +3,9 @@ import useAxios from '../../hooks/useAxios';
 import { API } from '../../config';
 
 export default function Cal2() {
-  const [inputValue, setInputValue] = useState('0');
+  const [inputValue, setInputValue] = useState(0);
   const [selectValue, setSelectValue] = useState('USDUSD');
   const [tapValue, setTapValue] = useState('USDCAD');
-  const [isClicked, setIsClicked] = useState([
-    true,
-    false,
-    false,
-    false,
-    false,
-  ]);
 
   const ref = useRef();
 
@@ -38,17 +31,6 @@ export default function Cal2() {
   const handleTapValue = e => {
     const name = e.target.getAttribute('name');
     setTapValue(name);
-    if (name === 'USDCAD') {
-      setIsClicked([true, false, false, false, false]);
-    } else if (name === 'USDKRW') {
-      setIsClicked([false, true, false, false, false]);
-    } else if (name === 'USDHKD') {
-      setIsClicked([false, false, true, false, false]);
-    } else if (name === 'USDJPY') {
-      setIsClicked([false, false, false, true, false]);
-    } else if (name === 'USDCNY') {
-      setIsClicked([false, false, false, false, true]);
-    }
   };
 
   const handleInputNumber = e => {
@@ -90,7 +72,7 @@ export default function Cal2() {
               name={selectValue === 'USDCAD' ? 'USDUSD' : 'USDCAD'}
               onClick={handleTapValue}
               className={`w-full h-8 text-center border-solid ${
-                isClicked[0] ? 'border-t-2' : 'border-y-2'
+                tapValue === 'USDCAD' ? 'border-t-2' : 'border-y-2'
               } border-l-2 last:border-r-2 border-black`}
             />
             <input
@@ -99,7 +81,7 @@ export default function Cal2() {
               name={selectValue === 'USDKRW' ? 'USDUSD' : 'USDKRW'}
               onClick={handleTapValue}
               className={`w-full h-8 text-center border-solid ${
-                isClicked[1] ? 'border-t-2' : 'border-y-2'
+                tapValue === 'USDKRW' ? 'border-t-2' : 'border-y-2'
               } border-l-2 last:border-r-2 border-black`}
             />
             <input
@@ -108,7 +90,7 @@ export default function Cal2() {
               name={selectValue === 'USDHKD' ? 'USDUSD' : 'USDHKD'}
               onClick={handleTapValue}
               className={`w-full h-8 text-center border-solid ${
-                isClicked[2] ? 'border-t-2' : 'border-y-2'
+                tapValue === 'USDHKD' ? 'border-t-2' : 'border-y-2'
               } border-l-2 last:border-r-2 border-black`}
             />
             <input
@@ -117,7 +99,7 @@ export default function Cal2() {
               name={selectValue === 'USDJPY' ? 'USDUSD' : 'USDJPY'}
               onClick={handleTapValue}
               className={`w-full h-8 text-center border-solid ${
-                isClicked[3] ? 'border-t-2' : 'border-y-2'
+                tapValue === 'USDJPY' ? 'border-t-2' : 'border-y-2'
               } border-l-2 last:border-r-2 border-black`}
             />
             <input
@@ -126,7 +108,7 @@ export default function Cal2() {
               name={selectValue === 'USDCNY' ? 'USDUSD' : 'USDCNY'}
               onClick={handleTapValue}
               className={`w-full h-8 text-center border-solid ${
-                isClicked[4] ? 'border-t-2' : 'border-y-2'
+                tapValue === 'USDCNY' ? 'border-t-2' : 'border-y-2'
               } border-l-2 last:border-r-2 border-black`}
             />
           </div>
