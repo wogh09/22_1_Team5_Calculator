@@ -50,7 +50,7 @@ export default function Cal1() {
           <select
             name="nations"
             id="nations-select"
-            className="border-solid border-2 border-black rounded-lg"
+            className="border-solid border-2 border-gray-400 rounded-lg ml-1 mb-1 pb-1"
             ref={ref}
             onChange={changeSelectValue}
           >
@@ -66,14 +66,14 @@ export default function Cal1() {
         <div className="flex">
           <div className="text-xl font-bold ">송금액:</div>
           <input
-            className="border-solid border-2 border-black box-border mb-3"
+            className="border-solid border-2 border-gray-400 box-border mb-3 ml-2"
             id="money"
             onChange={changeInputExchangeRate}
           />
-          <div className="text-xl font-bold">USD</div>
+          <div className="text-xl font-bold ml-2">USD</div>
         </div>
         <button
-          className="border-solid border-2 border-black text-xl font-bold mb-14 box-border"
+          className="border-solid border-2 border-gray-400 text-xl font-bold mb-14 box-border p-1 px-3.5 ml-2"
           onClick={totalPrice}
         >
           Submit
