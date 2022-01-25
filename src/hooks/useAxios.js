@@ -13,11 +13,7 @@ const useAxios = url => {
 
   const fetchData = async url => {
     try {
-      const response = await axios.get(url, {
-        headers: {
-          Authorization: API.key,
-        },
-      });
+      const response = await axios.get(url);
       setData(response.data.data);
     } catch (error) {
       setLoading(false);
