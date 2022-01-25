@@ -26,13 +26,7 @@ export default function Cal2() {
   const handleTapValue = e => {
     const name = e.target.getAttribute('name');
     setTapValue(name);
-    console.log(tapValue);
   };
-
-  console.log(selectValue);
-  console.log(data?.quotes);
-  console.log('tapValue>>>>', data?.quotes[tapValue]);
-  console.log('selectValue>>>>', data?.quotes[selectValue]);
 
   return (
     <div className="h-screen flex justify-center	items-center">
