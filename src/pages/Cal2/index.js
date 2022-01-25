@@ -17,8 +17,6 @@ export default function Cal2() {
 
   const timestamp = data?.timestamp * 1000;
   const date = new Date(timestamp);
-  console.log(date);
-  console.log(date.toDateString().slice(4, 7));
 
   const handleValue = e => {
     setInputValue(e.target.value);
@@ -31,17 +29,7 @@ export default function Cal2() {
   const handleTapValue = e => {
     const name = e.target.getAttribute('name');
     setTapValue(name);
-    console.log(tapValue);
   };
-
-  console.log(date);
-  console.log(date.getTime());
-
-  // console.log(selectValue);
-  // console.log(data?.quotes);
-  // console.log('tapValue>>>>', data?.quotes[tapValue]);
-  // console.log('selectValue>>>>', data?.quotes[selectValue]);
-  // console.log();
 
   return (
     <div className="h-screen flex justify-center  items-center">
@@ -110,8 +98,8 @@ export default function Cal2() {
             />
           </div>
           <div className="h-72 p-10 border-solid border-x-2 border-b-2 border-black">
-            <div className="text-2xl">
-              <span>{tapValue.substring(3)}</span>
+            <div className="text-3xl">
+              <span>{tapValue.substring(3)} </span>
               <span>
                 {((inputValue * saveTapValue) / saveSelectValue).toFixed(2)}
               </span>
@@ -122,7 +110,7 @@ export default function Cal2() {
                 '-' +
                 date.toDateString().slice(4, 7) +
                 '-' +
-                date.getDate()}
+                String(date.getDate()).padStart(2, '0')}
             </div>
           </div>
         </div>
