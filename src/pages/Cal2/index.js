@@ -6,6 +6,7 @@ export default function Cal2() {
   const [inputValue, setInputValue] = useState(0);
   const [selectValue, setSelectValue] = useState('USDUSD');
   const [tapValue, setTapValue] = useState('USDCAD');
+  const [selectedTapUnit, setSelectedTapUnit] = useState('');
 
   const ref = useRef();
 
