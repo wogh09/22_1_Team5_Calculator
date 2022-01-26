@@ -1,16 +1,48 @@
 import { useState, useRef } from 'react';
 import useAxios from '../../hooks/useAxios';
 import { API } from '../../config';
+import { makingTapMenu, calculateCurrency } from '../../utils/currency';
+import axios from 'axios';
 
 export default function Cal2() {
+  const [currencyData, setCurrenceyData] = useState();
   const [inputValue, setInputValue] = useState(0);
-  const [selectValue, setSelectValue] = useState('USDUSD');
-  const [tapValue, setTapValue] = useState('USDCAD');
+  const [selectValue, setSelectValue] = useState('USD');
+  const [tapValue, setTapValue] = useState('CAD');
   const [selectedTapUnit, setSelectedTapUnit] = useState('');
 
   const ref = useRef();
 
   const { data } = useAxios(`${API.key}${process.env.REACT_APP_DATA_KEY}`);
+  axios.get(`${API.key}${process.env.REACT_APP_DATA_KEY}`).then(res => {
+    setCurrenceyData([
+      {
+        name: 'USD',
+        value: res.data.quotes.USDUSD,
+      },
+      {
+        name: 'CAD',
+        value: res.data.quotes.USDCAD,
+      },
+      {
+        name: 'KRW',
+        value: res.data.quotes.USDKRW,
+      },
+      {
+        name: 'JPY',
+        value: res.data.quotes.USDJPY,
+      },
+      {
+        name: 'HKD',
+        value: res.data.quotes.USDHKD,
+      },
+      {
+        name: 'CNY',
+        value: res.data.quotes.USDCNY,
+      },
+    ]);
+  });
+
   const saveTapValue = data?.quotes[tapValue];
   const saveSelectValue = data?.quotes[selectValue];
 
@@ -18,11 +50,7 @@ export default function Cal2() {
   const date = new Date(timestamp);
 
   const handleValue = e => {
-    if (e.target.value > 1000) {
-      setInputValue(1000);
-    } else {
-      setInputValue(e.target.value);
-    }
+    e.target.value > 1000 ? setInputValue(1000) : setInputValue(e.target.value);
   };
 
   const changeSelectValue = () => {
@@ -56,63 +84,23 @@ export default function Cal2() {
               ref={ref}
               onChange={changeSelectValue}
             >
-              <option value="USDUSD">USD</option>
-              <option value="USDCAD">CAD</option>
-              <option value="USDKRW">KRW</option>
-              <option value="USDHKD">HKD</option>
-              <option value="USDJPY">JPY</option>
-              <option value="USDCNY">CNY</option>
+              {currencyData?.map((el, idx) => {
+                return (
+                  <option key={idx} value={el.name}>
+                    {el.name}
+                  </option>
+                );
+              })}
             </select>
           </div>
         </div>
         <div>
-          <div className="flex">
-            <input
-              type="button"
-              value={selectValue === 'USDCAD' ? 'USD' : 'CAD'}
-              name={selectValue === 'USDCAD' ? 'USDUSD' : 'USDCAD'}
-              onClick={handleTapValue}
-              className={`w-full h-8 text-center border-solid ${
-                tapValue === 'USDCAD' ? 'border-t-2' : 'border-y-2'
-              } border-l-2 last:border-r-2 border-black`}
-            />
-            <input
-              type="button"
-              value={selectValue === 'USDKRW' ? 'USD' : 'KRW'}
-              name={selectValue === 'USDKRW' ? 'USDUSD' : 'USDKRW'}
-              onClick={handleTapValue}
-              className={`w-full h-8 text-center border-solid ${
-                tapValue === 'USDKRW' ? 'border-t-2' : 'border-y-2'
-              } border-l-2 last:border-r-2 border-black`}
-            />
-            <input
-              type="button"
-              value={selectValue === 'USDHKD' ? 'USD' : 'HKD'}
-              name={selectValue === 'USDHKD' ? 'USDUSD' : 'USDHKD'}
-              onClick={handleTapValue}
-              className={`w-full h-8 text-center border-solid ${
-                tapValue === 'USDHKD' ? 'border-t-2' : 'border-y-2'
-              } border-l-2 last:border-r-2 border-black`}
-            />
-            <input
-              type="button"
-              value={selectValue === 'USDJPY' ? 'USD' : 'JPY'}
-              name={selectValue === 'USDJPY' ? 'USDUSD' : 'USDJPY'}
-              onClick={handleTapValue}
-              className={`w-full h-8 text-center border-solid ${
-                tapValue === 'USDJPY' ? 'border-t-2' : 'border-y-2'
-              } border-l-2 last:border-r-2 border-black`}
-            />
-            <input
-              type="button"
-              value={selectValue === 'USDCNY' ? 'USD' : 'CNY'}
-              name={selectValue === 'USDCNY' ? 'USDUSD' : 'USDCNY'}
-              onClick={handleTapValue}
-              className={`w-full h-8 text-center border-solid ${
-                tapValue === 'USDCNY' ? 'border-t-2' : 'border-y-2'
-              } border-l-2 last:border-r-2 border-black`}
-            />
-          </div>
+          <ul className="flex">
+            {currencyData &&
+              makingTapMenu(currencyData, selectValue).map((el, idx) => {
+                return <li key={idx}>{el.name}</li>;
+              })}
+          </ul>
           <div className="h-72 p-10 border-solid border-x-2 border-b-2 border-black">
             <div className="text-3xl">
               <span>
