@@ -3,45 +3,46 @@ import useAxios from '../../hooks/useAxios';
 import { API } from '../../config';
 import { makingTapMenu, calculateCurrency } from '../../utils/currency';
 import axios from 'axios';
+import { useEffect } from 'react/cjs/react.development';
 
 export default function Cal2() {
   const [currencyData, setCurrenceyData] = useState();
   const [inputValue, setInputValue] = useState(0);
   const [selectValue, setSelectValue] = useState('USD');
   const [tapValue, setTapValue] = useState('CAD');
-  const [selectedTapUnit, setSelectedTapUnit] = useState('');
 
   const ref = useRef();
-
   const { data } = useAxios(`${API.key}${process.env.REACT_APP_DATA_KEY}`);
-  axios.get(`${API.key}${process.env.REACT_APP_DATA_KEY}`).then(res => {
-    setCurrenceyData([
-      {
-        name: 'USD',
-        value: res.data.quotes.USDUSD,
-      },
-      {
-        name: 'CAD',
-        value: res.data.quotes.USDCAD,
-      },
-      {
-        name: 'KRW',
-        value: res.data.quotes.USDKRW,
-      },
-      {
-        name: 'JPY',
-        value: res.data.quotes.USDJPY,
-      },
-      {
-        name: 'HKD',
-        value: res.data.quotes.USDHKD,
-      },
-      {
-        name: 'CNY',
-        value: res.data.quotes.USDCNY,
-      },
-    ]);
-  });
+  useEffect(() => {
+    axios.get(`${API.key}${process.env.REACT_APP_DATA_KEY}`).then(res => {
+      setCurrenceyData([
+        {
+          name: 'USD',
+          value: res.data.quotes.USDUSD,
+        },
+        {
+          name: 'CAD',
+          value: res.data.quotes.USDCAD,
+        },
+        {
+          name: 'KRW',
+          value: res.data.quotes.USDKRW,
+        },
+        {
+          name: 'JPY',
+          value: res.data.quotes.USDJPY,
+        },
+        {
+          name: 'HKD',
+          value: res.data.quotes.USDHKD,
+        },
+        {
+          name: 'CNY',
+          value: res.data.quotes.USDCNY,
+        },
+      ]);
+    });
+  }, []);
 
   const saveTapValue = data?.quotes[tapValue];
   const saveSelectValue = data?.quotes[selectValue];
@@ -53,7 +54,20 @@ export default function Cal2() {
     e.target.value > 1000 ? setInputValue(1000) : setInputValue(e.target.value);
   };
 
-  const changeSelectValue = () => {
+  const handleDropMenu = e => {
+    const { value } = e.target;
+    setInputValue(value);
+    setTapValue(makingTapMenu(currencyData, value)[0].name);
+    calculateCurrency(currencyData, value, tapValue, inputValue);
+  };
+
+  const handleTapMenu = e => {
+    const { innerHTML } = e.target;
+    setTapValue(innerHTML);
+    calculateCurrency(currencyData, selectValue, innerHTML, inputValue);
+  };
+
+  const changeSelectValue = e => {
     setSelectValue(ref.current?.value);
   };
 
@@ -74,7 +88,7 @@ export default function Cal2() {
         <div className="flex mb-6">
           <input
             value={inputValue}
-            onChange={handleValue}
+            onChange={handleDropMenu}
             onKeyPress={handleInputNumber}
             className="w-full h-10 mr-1.5 pl-2 border-solid border-2 border-black"
           />
@@ -98,7 +112,17 @@ export default function Cal2() {
           <ul className="flex">
             {currencyData &&
               makingTapMenu(currencyData, selectValue).map((el, idx) => {
-                return <li key={idx}>{el.name}</li>;
+                return (
+                  <li
+                    key={idx}
+                    onClick={handleTapMenu}
+                    className={`w-full h-8 text-center border-solid ${
+                      tapValue === 'USDKRW' ? 'border-t-2' : 'border-y-2'
+                    } border-l-2 last:border-r-2 border-black`}
+                  >
+                    {el.name}
+                  </li>
+                );
               })}
           </ul>
           <div className="h-72 p-10 border-solid border-x-2 border-b-2 border-black">
