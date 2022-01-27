@@ -1,7 +1,12 @@
 import { useState, useRef } from 'react';
 import useAxios from '../../hooks/useAxios';
 import { API } from '../../config';
-import { makingTapMenu, calculateCurrency } from '../../utils/currency';
+import {
+  formatingNumber,
+  formatingTimestamp,
+  makingTapMenu,
+  calculateCurrency,
+} from '../../utils/currency';
 import axios from 'axios';
 import { useEffect } from 'react/cjs/react.development';
 
@@ -10,9 +15,9 @@ export default function Cal2() {
   const [inputValue, setInputValue] = useState(0);
   const [selectValue, setSelectValue] = useState('USD');
   const [tapValue, setTapValue] = useState('CAD');
+  const [date, setDate] = useState('');
 
   const ref = useRef();
-  const { data } = useAxios(`${API.key}${process.env.REACT_APP_DATA_KEY}`);
   useEffect(() => {
     axios.get(`${API.key}${process.env.REACT_APP_DATA_KEY}`).then(res => {
       setCurrenceyData([
@@ -41,18 +46,9 @@ export default function Cal2() {
           value: res.data.quotes.USDCNY,
         },
       ]);
+      setDate(formatingTimestamp(res.data.timestamp));
     });
   }, []);
-
-  const saveTapValue = data?.quotes[tapValue];
-  const saveSelectValue = data?.quotes[selectValue];
-
-  const timestamp = data?.timestamp * 1000;
-  const date = new Date(timestamp);
-
-  const handleValue = e => {
-    e.target.value > 1000 ? setInputValue(1000) : setInputValue(e.target.value);
-  };
 
   const handleDropMenu = e => {
     const { value } = e.target;
@@ -69,11 +65,6 @@ export default function Cal2() {
 
   const changeSelectValue = e => {
     setSelectValue(ref.current?.value);
-  };
-
-  const handleTapValue = e => {
-    const name = e.target.getAttribute('name');
-    setTapValue(name);
   };
 
   const handleInputNumber = e => {
@@ -127,11 +118,16 @@ export default function Cal2() {
           </ul>
           <div className="h-72 p-10 border-solid border-x-2 border-b-2 border-black">
             <div className="text-3xl">
+              <span>{tapValue}</span>
               <span>
-                {selectValue === tapValue ? 'USD' : tapValue.substring(3)}
-              </span>
-              <span>
-                {((inputValue * saveTapValue) / saveSelectValue).toFixed(2)}
+                {(currencyData &&
+                  calculateCurrency(
+                    currencyData,
+                    selectValue,
+                    tapValue,
+                    inputValue
+                  )) ||
+                  0}
               </span>
             </div>
             <div>기준일 :</div>
