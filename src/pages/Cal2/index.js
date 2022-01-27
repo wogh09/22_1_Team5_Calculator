@@ -131,13 +131,7 @@ export default function Cal2() {
               </span>
             </div>
             <div>기준일 :</div>
-            <div>
-              {date.getFullYear() +
-                '-' +
-                date.toDateString().slice(4, 7) +
-                '-' +
-                String(date.getDate()).padStart(2, '0')}
-            </div>
+            <div>{date}</div>
           </div>
         </div>
       </div>
