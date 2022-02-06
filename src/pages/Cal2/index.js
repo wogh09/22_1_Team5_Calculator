@@ -1,36 +1,70 @@
 import { useState, useRef } from 'react';
 import useAxios from '../../hooks/useAxios';
 import { API } from '../../config';
+import {
+  formatingNumber,
+  formatingTimestamp,
+  makingTapMenu,
+  calculateCurrency,
+} from '../../utils/currency';
+import axios from 'axios';
+import { useEffect } from 'react/cjs/react.development';
 
 export default function Cal2() {
+  const [currencyData, setCurrenceyData] = useState();
   const [inputValue, setInputValue] = useState(0);
-  const [selectValue, setSelectValue] = useState('USDUSD');
-  const [tapValue, setTapValue] = useState('USDCAD');
+  const [selectValue, setSelectValue] = useState('USD');
+  const [tapValue, setTapValue] = useState('CAD');
+  const [date, setDate] = useState('');
 
   const ref = useRef();
+  useEffect(() => {
+    axios.get(`${API.key}${process.env.REACT_APP_DATA_KEY}`).then(res => {
+      setCurrenceyData([
+        {
+          name: 'USD',
+          value: res.data.quotes.USDUSD,
+        },
+        {
+          name: 'CAD',
+          value: res.data.quotes.USDCAD,
+        },
+        {
+          name: 'KRW',
+          value: res.data.quotes.USDKRW,
+        },
+        {
+          name: 'JPY',
+          value: res.data.quotes.USDJPY,
+        },
+        {
+          name: 'HKD',
+          value: res.data.quotes.USDHKD,
+        },
+        {
+          name: 'CNY',
+          value: res.data.quotes.USDCNY,
+        },
+      ]);
+      setDate(formatingTimestamp(res.data.timestamp));
+    });
+  }, []);
 
-  const { data } = useAxios(`${API.key}${process.env.REACT_APP_DATA_KEY}`);
-  const saveTapValue = data?.quotes[tapValue];
-  const saveSelectValue = data?.quotes[selectValue];
-
-  const timestamp = data?.timestamp * 1000;
-  const date = new Date(timestamp);
-
-  const handleValue = e => {
-    if (e.target.value > 1000) {
-      setInputValue(1000);
-    } else {
-      setInputValue(e.target.value);
-    }
+  const handleDropMenu = e => {
+    const { value } = e.target;
+    setInputValue(value);
+    setTapValue(makingTapMenu(currencyData, value)[0].name);
+    calculateCurrency(currencyData, value, tapValue, inputValue);
   };
 
-  const changeSelectValue = () => {
+  const handleTapMenu = e => {
+    const { innerHTML } = e.target;
+    setTapValue(innerHTML);
+    calculateCurrency(currencyData, selectValue, innerHTML, inputValue);
+  };
+
+  const changeSelectValue = e => {
     setSelectValue(ref.current?.value);
-  };
-
-  const handleTapValue = e => {
-    const name = e.target.getAttribute('name');
-    setTapValue(name);
   };
 
   const handleInputNumber = e => {
@@ -45,7 +79,7 @@ export default function Cal2() {
         <div className="flex mb-6">
           <input
             value={inputValue}
-            onChange={handleValue}
+            onChange={handleDropMenu}
             onKeyPress={handleInputNumber}
             className="w-full h-10 mr-1.5 pl-2 border-solid border-2 border-black"
           />
@@ -55,80 +89,49 @@ export default function Cal2() {
               ref={ref}
               onChange={changeSelectValue}
             >
-              <option value="USDUSD">USD</option>
-              <option value="USDCAD">CAD</option>
-              <option value="USDKRW">KRW</option>
-              <option value="USDHKD">HKD</option>
-              <option value="USDJPY">JPY</option>
-              <option value="USDCNY">CNY</option>
+              {currencyData?.map((el, idx) => {
+                return (
+                  <option key={idx} value={el.name}>
+                    {el.name}
+                  </option>
+                );
+              })}
             </select>
           </div>
         </div>
         <div>
-          <div className="flex">
-            <input
-              type="button"
-              value={selectValue === 'USDCAD' ? 'USD' : 'CAD'}
-              name={selectValue === 'USDCAD' ? 'USDUSD' : 'USDCAD'}
-              onClick={handleTapValue}
-              className={`w-full h-8 text-center border-solid ${
-                tapValue === 'USDCAD' ? 'border-t-2' : 'border-y-2'
-              } border-l-2 last:border-r-2 border-black`}
-            />
-            <input
-              type="button"
-              value={selectValue === 'USDKRW' ? 'USD' : 'KRW'}
-              name={selectValue === 'USDKRW' ? 'USDUSD' : 'USDKRW'}
-              onClick={handleTapValue}
-              className={`w-full h-8 text-center border-solid ${
-                tapValue === 'USDKRW' ? 'border-t-2' : 'border-y-2'
-              } border-l-2 last:border-r-2 border-black`}
-            />
-            <input
-              type="button"
-              value={selectValue === 'USDHKD' ? 'USD' : 'HKD'}
-              name={selectValue === 'USDHKD' ? 'USDUSD' : 'USDHKD'}
-              onClick={handleTapValue}
-              className={`w-full h-8 text-center border-solid ${
-                tapValue === 'USDHKD' ? 'border-t-2' : 'border-y-2'
-              } border-l-2 last:border-r-2 border-black`}
-            />
-            <input
-              type="button"
-              value={selectValue === 'USDJPY' ? 'USD' : 'JPY'}
-              name={selectValue === 'USDJPY' ? 'USDUSD' : 'USDJPY'}
-              onClick={handleTapValue}
-              className={`w-full h-8 text-center border-solid ${
-                tapValue === 'USDJPY' ? 'border-t-2' : 'border-y-2'
-              } border-l-2 last:border-r-2 border-black`}
-            />
-            <input
-              type="button"
-              value={selectValue === 'USDCNY' ? 'USD' : 'CNY'}
-              name={selectValue === 'USDCNY' ? 'USDUSD' : 'USDCNY'}
-              onClick={handleTapValue}
-              className={`w-full h-8 text-center border-solid ${
-                tapValue === 'USDCNY' ? 'border-t-2' : 'border-y-2'
-              } border-l-2 last:border-r-2 border-black`}
-            />
-          </div>
+          <ul className="flex">
+            {currencyData &&
+              makingTapMenu(currencyData, selectValue).map((el, idx) => {
+                return (
+                  <li
+                    key={idx}
+                    onClick={handleTapMenu}
+                    className={`w-full h-8 text-center border-solid ${
+                      tapValue === 'USDKRW' ? 'border-t-2' : 'border-y-2'
+                    } border-l-2 last:border-r-2 border-black`}
+                  >
+                    {el.name}
+                  </li>
+                );
+              })}
+          </ul>
           <div className="h-72 p-10 border-solid border-x-2 border-b-2 border-black">
             <div className="text-3xl">
+              <span>{tapValue}</span>
               <span>
-                {selectValue === tapValue ? 'USD' : tapValue.substring(3)}
-              </span>
-              <span>
-                {((inputValue * saveTapValue) / saveSelectValue).toFixed(2)}
+                {(currencyData &&
+                  calculateCurrency(
+                    currencyData,
+                    selectValue,
+                    tapValue,
+                    inputValue
+                  )) ||
+                  0}
               </span>
             </div>
             <div>기준일 :</div>
-            <div>
-              {date.getFullYear() +
-                '-' +
-                date.toDateString().slice(4, 7) +
-                '-' +
-                String(date.getDate()).padStart(2, '0')}
-            </div>
+            <div>{date}</div>
           </div>
         </div>
       </div>
